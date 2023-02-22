@@ -6,7 +6,7 @@ xray panel supporting multi-protocol, **Multi-lang (English,Farsi,Chinese)**
 # Install & Upgrade
 
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/mhsanaei/3x-ui/master/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/ach1992/ACh-X-UI/master/install.sh)
 ```
 
 # SSL
@@ -56,10 +56,10 @@ After you set ssl on settings
 
 # pic
 
-![1](https://raw.githubusercontent.com/MHSanaei/3x-ui/main/media/1.png)
-![2](https://raw.githubusercontent.com/MHSanaei/3x-ui/main/media/2.png)
-![3](https://raw.githubusercontent.com/MHSanaei/3x-ui/main/media/3.png)
-![4](https://raw.githubusercontent.com/MHSanaei/3x-ui/main/media/4.png)
+![1](https://raw.githubusercontent.com/ach1992/ACh-X-UI/main/media/1.png)
+![2](https://raw.githubusercontent.com/ach1992/ACh-X-UI/main/media/2.png)
+![3](https://raw.githubusercontent.com/ach1992/ACh-X-UI/main/media/3.png)
+![4](https://raw.githubusercontent.com/ach1992/ACh-X-UI/main/media/4.png)
 
 # a special thanks to
 - [vaxilu](https://github.com/vaxilu/)
@@ -71,4 +71,4 @@ After you set ssl on settings
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/MHSanaei/3x-ui.svg)](https://starchart.cc/MHSanaei/3x-ui)
+[![Stargazers over time](https://starchart.cc/ach1992/ACh-X-UI.svg)](https://starchart.cc/ach1992/ACh-X-UI)
