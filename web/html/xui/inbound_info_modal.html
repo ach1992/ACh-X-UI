@@ -1,0 +1,186 @@
+{{define "inboundInfoModal"}}
+<a-modal id="inbound-info-modal"
+    v-model="infoModal.visible" title='{{ i18n "pages.inbounds.details"}}'
+    :closable="true"
+    :mask-closable="true"
+    :footer="null"
+    width="600px"
+    >
+    <table style="margin-bottom: 10px; width: 100%;">
+        <tr><td>
+            <table>
+                <tr><td>{{ i18n "protocol" }}</td><td><a-tag color="green">[[ dbInbound.protocol ]]</a-tag></td></tr>
+                <tr><td>{{ i18n "pages.inbounds.address" }}</td><td><a-tag color="blue">[[ dbInbound.address ]]</a-tag></td></tr>
+                <tr><td>{{ i18n "pages.inbounds.port" }}</td><td><a-tag color="green">[[ dbInbound.port ]]</a-tag></td></tr>
+            </table>
+        </td>
+        <td v-if="dbInbound.isVMess || dbInbound.isVLess || dbInbound.isTrojan || dbInbound.isSS">
+            <table>
+                <tr>
+                    <td>{{ i18n "transmission" }}</td><td><a-tag color="green">[[ inbound.network ]]</a-tag></td>
+                </tr>
+            <template v-if="inbound.isTcp || inbound.isWs || inbound.isH2">
+                <tr v-if="inbound.host"><td>{{ i18n "host" }}</td><td><a-tag color="green">[[ inbound.host ]]</a-tag></td></tr>
+                <tr v-else><td>{{ i18n "host" }}</td><td><a-tag color="orange">{{ i18n "none" }}</a-tag></td></tr>
+            
+                <tr v-if="inbound.path"><td>{{ i18n "path" }}</td><td><a-tag color="green">[[ inbound.path ]]</a-tag></td></tr>
+                <tr v-else><td>{{ i18n "path" }}</td><td><a-tag color="orange">{{ i18n "none" }}</a-tag></td></tr>
+            </template>
+            
+            <template v-if="inbound.isQuic">
+                <tr><td>quic {{ i18n "encryption" }}</td><td><a-tag color="green">[[ inbound.quicSecurity ]]</a-tag></td></tr>
+                <tr><td>quic {{ i18n "password" }}</td><td><a-tag color="green">[[ inbound.quicKey ]]</a-tag></td></tr>
+                <tr><td>quic {{ i18n "camouflage" }}</td><td><a-tag color="green">[[ inbound.quicType ]]</a-tag></td></tr>
+            </template>
+            
+            <template v-if="inbound.isKcp">
+                <tr><td>kcp {{ i18n "encryption" }}</td><td><a-tag color="green">[[ inbound.kcpType ]]</a-tag></td></tr>
+                <tr><td>kcp {{ i18n "password" }}</td><td><a-tag color="green">[[ inbound.kcpSeed ]]</a-tag></td></tr>
+            </template>
+            
+            <template v-if="inbound.isGrpc">
+                <tr><td>grpc serviceName</td><td><a-tag color="green">[[ inbound.serviceName ]]</a-tag></td></tr>
+            </template>
+            </table>
+        </td></tr>
+            <tr colspan="2">
+                <td v-if="inbound.tls">
+                    tls: <a-tag color="green">{{ i18n "enabled" }}</a-tag><br />
+                    tls {{ i18n "domainName" }}: <a-tag :color="inbound.serverName ? 'green' : 'orange'">[[ inbound.serverName ? inbound.serverName : '' ]]</a-tag>
+                </td>
+                <td v-else-if="inbound.xtls">
+                    xtls: <a-tag color="green">{{ i18n "enabled" }}</a-tag><br />
+                    xtls {{ i18n "domainName" }}: <a-tag :color="inbound.serverName ? 'green' : 'orange'">[[ inbound.serverName ? inbound.serverName : '' ]]</a-tag>
+                </td>
+                <td v-else>tls: <a-tag color="red">{{ i18n "disabled" }}</a-tag>
+            </td>
+        </tr>
+    </table>
+    <a-divider>{{ i18n "pages.inbounds.client" }}</a-divider>
+    <table style="margin-bottom: 10px; width: 100%;">
+        <tr><th>[[ Object.keys(infoModal.clientSettings)[0] ]]</th><th>[[ Object.keys(infoModal.clientSettings)[1] ]]</th><th>[[ Object.keys(infoModal.clientSettings)[2] ]]</th></tr>
+        <tr>
+            <td><a-tag color="green">[[ Object.values(infoModal.clientSettings)[0] ]]</a-tag></td>
+            <td><a-tag color="green">[[ Object.values(infoModal.clientSettings)[1] ]]</a-tag></td>
+            <td><a-tag color="green">[[ Object.values(infoModal.clientSettings)[2] ]]</a-tag></td>
+        </tr>
+    </table>
+    <table style="margin-bottom: 10px; width: 100%;">
+            <tr><th>{{ i18n "usage" }}</th><th>{{ i18n "pages.inbounds.totalFlow" }}</th><th>{{ i18n "pages.inbounds.expireDate" }}</th><th>{{ i18n "enable" }}</th></tr>    
+        <tr>
+            <td>
+                <a-tag :color="statsColor(infoModal.clientStats)">
+                    [[ sizeFormat(infoModal.clientStats['up']) ]] / 
+                    [[ sizeFormat(infoModal.clientStats['down']) ]]
+                    ([[ sizeFormat(infoModal.clientStats['up'] + infoModal.clientStats['down']) ]])
+                </a-tag>
+            </td>
+            <td>
+                <a-tag v-if="infoModal.clientSettings.totalGB > 0" :color="statsColor(infoModal.clientStats)">[[ sizeFormat(infoModal.clientSettings.totalGB) ]]</a-tag>
+                <a-tag v-else color="green">{{ i18n "indefinite" }}</a-tag>
+            </td>
+            <td>
+                <template v-if="infoModal.clientSettings.expiryTime > 0">
+                    <a-tag :color="infoModal.isExpired ? 'red' : 'blue'">
+                        [[ DateUtil.formatMillis(infoModal.clientSettings.expiryTime) ]]
+                    </a-tag>
+                </template>
+                <a-tag v-else color="green">{{ i18n "indefinite" }}</a-tag>
+            </td>
+            <td>
+                <a-tag v-if="infoModal.clientStats.enable" color="blue">{{ i18n "enabled" }}</a-tag>
+                <a-tag v-else color="red">{{ i18n "disabled" }}</a-tag>
+            </td>
+        </tr>
+    </table>
+    <div v-if="dbInbound.hasLink()">
+        <a-divider>URL</a-divider>
+        <p>[[ infoModal.link ]]</p>
+        <button class="ant-btn ant-btn-primary" id="copy-url-link"><a-icon type="snippets"></a-icon>{{ i18n "copy" }}</button>
+    </div>
+</a-modal>
+<script>
+
+    const infoModal = {
+        visible: false,
+        inbound: new Inbound(),
+        dbInbound: new DBInbound(),
+        clientSettings: new Inbound.Settings(),
+        clientStats: [],
+        upStats: 0,
+        downStats: 0,
+        clipboard: null,
+        link: null,
+        index: 0,
+        isExpired: false,
+        show(dbInbound, index=0) {
+            this.index = index;
+            this.inbound = dbInbound.toInbound();
+            this.dbInbound = new DBInbound(dbInbound);
+            this.link = dbInbound.genLink(index);
+            this.clientSettings = Object.values(JSON.parse(this.inbound.settings).clients)[index];
+            this.clientStats = dbInbound.clientStats;
+            this.isExpired = this.inbound.isExpiry(index);
+            if(dbInbound.clientStats.length > 0)
+            {
+                for (const key in dbInbound.clientStats) {
+                    if (Object.hasOwnProperty.call(dbInbound.clientStats, key)) {
+                        if(dbInbound.clientStats[key]['email'] == this.clientSettings.email)
+                            this.clientStats = dbInbound.clientStats[key];
+
+                    }
+                }
+            }
+            this.visible = true;
+            infoModalApp.$nextTick(() => {
+                if (this.clipboard === null) {
+                    this.clipboard = new ClipboardJS('#copy-url-link', {
+                        text: () => this.link,
+                    });
+                    this.clipboard.on('success', () => app.$message.success('{{ i18n "copySuccess" }}'));
+                }
+            });
+        },
+        close() {
+            infoModal.visible = false;
+        },
+    };
+    const infoModalApp = new Vue({
+        delimiters: ['[[', ']]'],
+        el: '#inbound-info-modal',
+        data: {
+            infoModal,
+            get dbInbound() {
+                return this.infoModal.dbInbound;
+            },
+            get inbound() {
+                return this.infoModal.inbound;
+            }
+        },
+        methods: {
+            setQrCode(elmentId,index) {
+                content = infoModal.inbound.genLink(infoModal.dbInbound.address,infoModal.dbInbound.remark,index)
+                new QRious({
+                        element: document.querySelector('#'+elmentId),
+                        size: 260,
+                        value: content,
+                    });
+            },
+            copyTextToClipboard(elmentId,content) {
+                this.infoModal.clipboard = new ClipboardJS('#' + elmentId, {
+                        text: () => content,
+                    });
+                this.infoModal.clipboard.on('success', () => { 
+                    app.$message.success('{{ i18n "copySuccess" }}')
+                    this.infoModal.clipboard.destroy();
+                });
+            },
+            statsColor(stats) {
+                if(stats['total'] === 0) return 'blue'
+                else if(stats['total'] > 0 && (stats['down']+stats['up']) < stats['total']) return 'cyan'
+                else return 'red'
+            }
+        },
+    });
+</script>
+{{end}}
