@@ -1,8 +1,5 @@
-# 3x-ui
-![](https://img.shields.io/github/v/release/ach1992/ACh-X-UI.svg)
-![](https://img.shields.io/github/actions/workflow/status/ach1992/ACh-X-UI/release.yml.svg)
+# 3X-UI
 [![GO Version](https://img.shields.io/github/go-mod/go-version/ach1992/ACh-X-UI.svg)](https://img.shields.io/github/go-mod/go-version/ach1992/ACh-X-UI)
-[![Downloads](https://img.shields.io/github/downloads/ach1992/ACh-X-UI/total.svg)](https://img.shields.io/github/downloads/ach1992/ACh-X-UI/total)
 [![License](https://img.shields.io/badge/license-GPL%20V3-blue.svg?longCache=true)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 > **Disclaimer: This project is only for personal learning and communication, please do not use it for illegal purposes, please do not use it in a production environment**
